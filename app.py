@@ -563,9 +563,3 @@ def export_report():
     doc.build(elements)
 
     return send_file(filepath, as_attachment=True)
-
-
-# -------------------- Run App -------------------- #
-
-if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
