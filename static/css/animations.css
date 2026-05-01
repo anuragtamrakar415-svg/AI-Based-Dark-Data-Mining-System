@@ -1,0 +1,197 @@
+
+.animated-background {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+    overflow: hidden;
+}
+
+/* Animated grid lines */
+.grid-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+}
+
+/* Animated nodes/particles */
+.node {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: rgba(0, 255, 255, 0.7);
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px rgba(0, 255, 255, 0.5);
+}
+
+.node::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+/* Data stream lines */
+.data-stream {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    animation: streamFlow 4s linear infinite;
+}
+
+/* Hexagon pattern */
+.hexagon {
+    position: absolute;
+    width: 60px;
+    height: 34.64px;
+    background-color: rgba(0, 255, 255, 0.05);
+    margin: 17.32px 0;
+    border-left: 1px solid rgba(0, 255, 255, 0.2);
+    border-right: 1px solid rgba(0, 255, 255, 0.2);
+    animation: hexRotate 30s infinite linear;
+}
+
+.hexagon:before,
+.hexagon:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+}
+
+.hexagon:before {
+    bottom: 100%;
+    border-bottom: 17.32px solid rgba(0, 255, 255, 0.05);
+}
+
+.hexagon:after {
+    top: 100%;
+    width: 0;
+    border-top: 17.32px solid rgba(0, 255, 255, 0.05);
+}
+
+/* Animated scan line */
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+    animation: scan 6s ease-in-out infinite;
+}
+
+/* Glowing orb */
+.glow-orb {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.4) 0%, transparent 70%);
+    filter: blur(20px);
+    animation: orbFloat 15s ease-in-out infinite;
+}
+
+/* Binary code rain */
+.binary-rain {
+    position: absolute;
+    color: rgba(0, 255, 255, 0.3);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    animation: fall linear infinite;
+}
+
+/* Keyframe Animations */
+@keyframes gridMove {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 50px 50px;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(3);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+@keyframes streamFlow {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+@keyframes hexRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 0%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(100px, -50px);
+    }
+    50% {
+        transform: translate(50px, 100px);
+    }
+    75% {
+        transform: translate(-100px, 50px);
+    }
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh);
+    }
+}

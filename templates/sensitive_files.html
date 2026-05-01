@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitive Files | Dark Data Mining</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sensitive_files.css') }}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="gradient-sphere"></div>
+    <div class="gradient-sphere-2"></div>
+    <div class="gradient-sphere-3"></div>
+    
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                    <div class="gradient-text">Sensitive Files Monitor</div>
+                    <div class="header-subtitle">Real-time sensitive data tracking</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="ai-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Live Monitoring</span>
+                </div>
+                <div class="date-badge">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="title-section">
+            <h1 class="main-title">
+                <i class="fas fa-exclamation-triangle title-icon"></i>
+                Sensitive Files
+                <span class="title-badge">Current Upload</span>
+            </h1>
+            <p class="title-description">
+                Monitoring and managing sensitive data across your organization
+            </p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon critical">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Critical Files</div>
+                    <div class="stat-value">{{ files|selectattr('status', 'equalto', 'Critical')|list|length }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Warning</div>
+                    <div class="stat-value">{{ files|selectattr('status', 'equalto', 'Warning')|list|length }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon resolved">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Resolved</div>
+                    <div class="stat-value">{{ files|selectattr('status', 'equalto', 'Resolved')|list|length }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Total Files</div>
+                    <div class="stat-value">{{ files|length }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by filename...">
+            </div>
+            
+            <div class="filter-actions">
+                <select id="typeFilter" class="filter-select">
+                    <option value="all">All Types</option>
+                    <option value="PDF">PDF</option>
+                    <option value="DOC">DOC</option>
+                    <option value="XLS">XLS</option>
+                    <option value="CSV">CSV</option>
+                    <option value="TXT">TXT</option>
+                </select>
+                
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="Critical">Critical</option>
+                    <option value="Warning">Warning</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Pending">Pending</option>
+                </select>
+                
+                <button class="btn-filter" id="applyFilters">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+                
+                <button class="btn-reset" id="resetFilters">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <table class="sensitive-table">
+                <thead>
+                    <tr>
+                        <th width="5%">
+                            <input type="checkbox" id="selectAll">
+                        </th>
+                        <th width="35%">Filename</th>
+                        <th width="15%">Type</th>
+                        <th width="20%">Status</th>
+                        <th width="20%">Upload Time</th>
+                        <th width="5%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% for file in files %}
+                    <tr class="file-row" data-filename="{{ file.filename }}" data-type="{{ file.file_type }}" data-status="{{ file.status }}">
+                        <td>
+                            <input type="checkbox" class="file-checkbox" value="{{ file.filename }}">
+                        </td>
+                        <td class="filename-cell">
+                            <i class="fas {% if file.file_type == 'PDF' %}fa-file-pdf{% elif file.file_type == 'DOC' %}fa-file-word{% elif file.file_type == 'XLS' %}fa-file-excel{% elif file.file_type == 'CSV' %}fa-file-csv{% else %}fa-file-alt{% endif %} file-icon"></i>
+                            <span>{{ file.filename }}</span>
+                        </td>
+                        <td>
+                            <span class="file-type-badge">{{ file.file_type }}</span>
+                        </td>
+                        <td>
+                            {% set status = file.status|lower %}
+                            <span class="status-badge {{ 'critical' if file.status == 'Critical' else 'warning' if file.status == 'Warning' else 'resolved' if file.status == 'Resolved' else 'pending' }}">
+                                <i class="fas {% if file.status == 'Critical' %}fa-exclamation-circle{% elif file.status == 'Warning' %}fa-exclamation-triangle{% elif file.status == 'Resolved' %}fa-check-circle{% else %}fa-clock{% endif %}"></i>
+                                {{ file.status }}
+                            </span>
+                        </td>
+                        <td class="upload-time">
+                            <i class="far fa-clock"></i>
+                            {{ file.upload_time }}
+                        </td>
+                        <td class="action-cell">
+                            <div class="action-dropdown">
+                                <button class="action-btn" onclick="toggleDropdown(this)">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="#" onclick="viewFile('{{ file.filename }}')">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="#" onclick="downloadFile('{{ file.filename }}')">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                    <a href="#" onclick="deleteFile('{{ file.filename }}')" class="delete-action">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- No Results Message -->
+            <div class="no-results hidden" id="noResults">
+                <i class="fas fa-search"></i>
+                <h3>No files found</h3>
+                <p>Try adjusting your search or filter criteria</p>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="page-btn" id="prevPage" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="page-numbers" id="paginationNumbers"></div>
+            <button class="page-btn" id="nextPage">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="bottom-actions">
+            <div class="selected-info">
+                <span id="selectedCount">0</span> files selected
+            </div>
+            
+            <div class="action-group">
+                <button class="btn-export" id="exportBtn">
+                    <i class="fas fa-download"></i>
+                    Export Report
+                </button>
+                
+                <a href="{{ url_for('dashboard') }}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="{{ url_for('static', filename='js/sensitive-files.js') }}"></script>
+</body>
+</html>

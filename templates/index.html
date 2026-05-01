@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Dark Data Mining | Welcome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-sphere"></div>
+        <div class="gradient-sphere-2"></div>
+        <div class="gradient-sphere-3"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle" style="--x: 10%; --y: 20%; --delay: 0s;"></div>
+        <div class="particle" style="--x: 80%; --y: 60%; --delay: 2s;"></div>
+        <div class="particle" style="--x: 30%; --y: 80%; --delay: 4s;"></div>
+        <div class="particle" style="--x: 70%; --y: 30%; --delay: 1s;"></div>
+        <div class="particle" style="--x: 40%; --y: 70%; --delay: 3s;"></div>
+        <div class="particle" style="--x: 90%; --y: 40%; --delay: 5s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header with 3D Effect -->
+        <header class="header">
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h1 class="gradient-text">AI-Based Dark Data Mining System</h1>
+            </div>
+            <div class="ai-badge">
+                <span class="pulse-dot"></span>
+                AI ACTIVE
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <main class="hero">
+            <div class="hero-content">
+                <!-- Welcome Badge -->
+                <div class="welcome-badge">
+                    <i class="fas fa-hand-wave"></i>
+                    Welcome to the Future
+                </div>
+
+                <!-- Main Heading -->
+                <h2 class="hero-title">
+                    Unlock Hidden Insights from
+                    <span class="gradient-text-2">Dark Data</span>
+                </h2>
+
+                <!-- Description -->
+                <p class="hero-description">
+                    Transform your unstructured data into actionable intelligence 
+                    using advanced AI algorithms. Upload files and get instant insights.
+                </p>
+
+                <!-- Stats Counter -->
+                <div class="stats-mini">
+                    <div class="stat-item">
+                        <div class="stat-number">2.5M+</div>
+                        <div class="stat-label">Files Processed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98.5%</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">AI Analysis</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <form action="/upload" method="post" id="uploadForm">
+                        <button class="btn btn-primary" id="uploadBtn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Upload Data</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                    </form>
+                    
+                    
+                    <button class="btn btn-secondary" id="dashboardBtn">
+                        <span>View Dashboard</span>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+
+                <!-- Upload Area (Initially Hidden) -->
+                <div class="upload-area" id="uploadArea">
+                
+                    <div class="upload-card">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+
+                        
+                      
+                       <form action="/upload" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+
+    <input type="file" name="files" multiple>
+
+    <h3>Drag & Drop Files Here</h3>
+    <p>or click to browse</p>
+
+    <div class="file-types">
+        <span class="file-type">PDF</span>
+        <span class="file-type">CSV</span>
+        <span class="file-type">DOC</span>
+        <span class="file-type">TXT</span>
+        <span class="file-type">JSON</span>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <button type="submit" class="btn btn-primary">
+        Start Analysis
+    </button>
+
+</form>
+                    </div>
+                
+                </div>
+
+                <!-- Trusted By Section -->
+                <div class="trusted-by">
+                    <p>Trusted by leading companies</p>
+                    <div class="company-logos">
+                        <i class="fab fa-microsoft"></i>
+                        <i class="fab fa-google"></i>
+                        <i class="fab fa-amazon"></i>
+                        <i class="fab fa-meta"></i>
+                        <i class="fab fa-ibm"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Image/Illustration -->
+            <div class="hero-image">
+                <div class="floating-card card-1">
+                    <i class="fas fa-database"></i>
+                    <span>Dark Data</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security</span>
+                </div>
+                <div class="floating-card card-4">
+                    <i class="fas fa-robot"></i>
+                    <span>AI</span>
+                </div>
+                <div class="circle-animation"></div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-left">
+                <i class="fas fa-shield-alt"></i>
+                <span>Enterprise-grade security • GDPR Compliant</span>
+            </div>
+            <div class="footer-right">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <span class="separator">|</span>
+                <span>© 2026 AI Dark Data Mining</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

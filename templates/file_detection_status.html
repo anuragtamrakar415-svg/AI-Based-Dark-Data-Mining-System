@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Detection Status | Dark Data Mining</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/file_detection_status.css') }}">
+</head>
+<body>
+    <!-- Simple Dark Background -->
+    <div class="animated-bg"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                    <div class="gradient-text">File Detection Status</div>
+                    <div class="header-subtitle">Real-time file scanning & monitoring</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="ai-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Live Detection</span>
+                </div>
+                <div class="date-badge">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="title-section">
+            <h1 class="main-title">
+                <i class="fas fa-search title-icon"></i>
+                File Detection Status
+            </h1>
+            <p class="title-description">Monitor the detection status of your uploaded files</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            {% set detected_count = files|selectattr('status', 'equalto', 'Detected')|list|length %}
+            {% set not_detected_count = files|selectattr('status', 'equalto', 'Not Detected')|list|length %}
+            {% set pending_count = files|selectattr('status', 'equalto', 'Pending')|list|length %}
+            
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-files"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Total Files</div>
+                    <div class="stat-value">{{ files|length }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon detected">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Detected</div>
+                    <div class="stat-value">{{ detected_count }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon clean">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Not Detected</div>
+                    <div class="stat-value">{{ not_detected_count }}</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value">{{ pending_count }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search files...">
+            </div>
+            
+            <div class="filter-actions">
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="Detected">Detected</option>
+                    <option value="Not Detected">Not Detected</option>
+                    <option value="Pending">Pending</option>
+                </select>
+                
+                <button class="btn-filter" id="applyFilters">
+                    <i class="fas fa-filter"></i>
+                    Apply Filter
+                </button>
+                
+                <button class="btn-reset" id="resetFilters">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Files Grid -->
+        <div class="files-grid" id="filesGrid">
+            {% for file in files %}
+            <div class="file-card" data-filename="{{ file.filename }}" data-status="{{ file.status }}">
+                <div class="file-card-header">
+                    <div class="file-icon">
+                        <i class="fas {% if file.filename.endswith('.pdf') %}fa-file-pdf{% elif file.filename.endswith('.doc') or file.filename.endswith('.docx') %}fa-file-word{% elif file.filename.endswith('.xls') or file.filename.endswith('.xlsx') %}fa-file-excel{% elif file.filename.endswith('.csv') %}fa-file-csv{% else %}fa-file-alt{% endif %}"></i>
+                    </div>
+                    <div class="file-status-badge {{ file.status|lower|replace(' ', '-') }}">
+                        {{ file.status }}
+                    </div>
+                </div>
+                
+                <div class="file-details">
+                    <h3 class="file-name">{{ file.filename }}</h3>
+                    
+                    <div class="file-meta">
+                        <span class="file-type">
+                            <i class="fas fa-tag"></i>
+                            {{ file.filename.split('.')[-1].upper() }}
+                        </span>
+                        <span class="file-size">
+                            <i class="fas fa-weight-hanging"></i>
+                            {{ file.size|default('2.4 MB') }}
+                        </span>
+                    </div>
+                    
+                    <div class="file-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ file.progress|default(100) }}%"></div>
+                        </div>
+                        <span class="progress-text">{{ file.progress|default(100) }}%</span>
+                    </div>
+                    
+                    <div class="file-footer">
+                        <span class="file-time">
+                            <i class="far fa-clock"></i>
+                            f.date_created.strftime("%d %b %Y")
+                        </span>
+                        
+                        <div class="file-actions">
+                            <button class="action-btn" onclick="viewFile('{{ file.filename }}')" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn" onclick="downloadFile('{{ file.filename }}')" title="Download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results hidden" id="noResults">
+            <i class="fas fa-search"></i>
+            <h3>No files found</h3>
+            <p>Try adjusting your search or filter criteria</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="action-btn primary" onclick="scanAgain()">
+                <i class="fas fa-sync-alt"></i>
+                Scan Again
+            </button>
+            <button class="action-btn secondary" onclick="exportResults()">
+                <i class="fas fa-download"></i>
+                Export Results
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="action-btn secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-left">
+                <i class="fas fa-shield-alt"></i>
+                <span>Real-time file detection active</span>
+            </div>
+            <div class="footer-right">
+                <span class="online-indicator"></span>
+                <span>System Online</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+
+        // Filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const applyBtn = document.getElementById('applyFilters');
+        const resetBtn = document.getElementById('resetFilters');
+        const filesGrid = document.getElementById('filesGrid');
+        const fileCards = document.querySelectorAll('.file-card');
+        const noResults = document.getElementById('noResults');
+
+        function filterFiles() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusValue = statusFilter.value;
+            
+            let visibleCount = 0;
+            
+            fileCards.forEach(card => {
+                const filename = card.dataset.filename.toLowerCase();
+                const status = card.dataset.status;
+                
+                const matchesSearch = filename.includes(searchTerm);
+                const matchesStatus = statusValue === 'all' || status === statusValue;
+                
+                if (matchesSearch && matchesStatus) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('keyup', filterFiles);
+        applyBtn.addEventListener('click', filterFiles);
+        
+        resetBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            statusFilter.value = 'all';
+            filterFiles();
+        });
+
+        // Action functions
+        function viewFile(filename) {
+            alert('Viewing file: ' + filename);
+        }
+
+        function downloadFile(filename) {
+            alert('Downloading file: ' + filename);
+        }
+
+        function scanAgain() {
+            alert('Starting new scan...');
+        }
+
+        function exportResults() {
+            alert('Exporting detection results...');
+        }
+
+        // Add hover effects
+        document.querySelectorAll('.file-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

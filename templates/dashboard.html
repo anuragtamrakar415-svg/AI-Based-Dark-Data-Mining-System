@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Dark Data Mining System | Premium Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <!-- Simple Dark Background -->
+    <div class="animated-bg"></div>
+
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h1 class="gradient-text">AI-Based Dark Data Mining System</h1>
+                </div>
+                <div class="live-badge">
+                    <span class="pulse-dot"></span>
+                    LIVE
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="ai-status">
+                    <div class="status-indicator"></div>
+                    <span>AI Core v2.5</span>
+                </div>
+                <div class="date-time">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="current-date"></span>
+                </div>
+                <div class="notification-icon">
+                    <i class="far fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="profile-icon">
+                    <i class="far fa-user-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="stats-row">
+            <!-- Total Files -->
+            <a href="{{ url_for('file_detection_status') }}" class="stat-link">
+                <div class="stat-card" style="--card-color: #4361ee">
+                    <div class="stat-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total Files Processed</div>
+                        <div class="stat-number">{{ processed_files }}</div>
+                    </div>
+                    <div class="stat-glow"></div>
+                </div>
+            </a>
+
+            <!-- Sensitive Files -->
+            <a href="{{ url_for('sensitive_files') }}" class="stat-link">
+                <div class="stat-card" style="--card-color: #f72585">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Sensitive Data Detected</div>
+                        <div class="stat-number">{{ sensitive_count }}</div>
+                        <div class="stat-trend negative">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ sensitive_count > 0 and 'High Risk' or 'No Issues' }}
+                        </div>
+                    </div>
+                    <div class="stat-glow"></div>
+                </div>
+            </a>
+
+            <!-- Summary Reports -->
+            <a href="{{ url_for('summary_report') }}" class="stat-link">
+                <div class="stat-card" style="--card-color: #4cc9f0">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Summary Reports</div>
+                        <div class="stat-number">{{ summary_count }}</div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-file-alt"></i>
+                            {{ summary_count > 0 and 'Available' or 'No Reports' }}
+                        </div>
+                    </div>
+                    <div class="stat-glow"></div>
+                </div>
+            </a>
+
+            <!-- Alerts -->
+            <div class="stat-card" style="--card-color: #f8961e">
+                <div class="stat-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Alerts Generated</div>
+                    <div class="stat-number">{{ alerts|length }}</div>
+                    <div class="stat-trend warning">
+                        <i class="fas fa-clock"></i> Active Monitoring
+                    </div>
+                </div>
+                <div class="stat-glow"></div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Data Classification Card -->
+                <div class="card glass-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-layer-group"></i> Data Classification</h2>
+                        <div class="badge">AI Analysis</div>
+                    </div>
+                    
+                    <div class="classification-wrapper">
+                        <div class="classification-grid">
+                            {% for type, percent in classification %}
+                            <div class="class-item">
+                                <div class="class-info">
+                                    <span class="class-name">{{ type }}</span>
+                                    <span class="class-percent">{{ percent }}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ percent }}%; background: 
+                                        {% if type == 'PDF' %}#f72585
+                                        {% elif type == 'DOC' or type == 'DOCX' %}#4361ee
+                                        {% elif type == 'XLS' or type == 'XLSX' %}#10b981
+                                        {% elif type == 'CSV' %}#f8961e
+                                        {% elif type == 'TXT' %}#9c27b0
+                                        {% elif type == 'LOG' %}#ff9800
+                                        {% elif type == 'JPEG' or type == 'JPG' %}#e83e8c
+                                        {% elif type == 'PNG' %}#4cc9f0
+                                        {% elif type == 'JSON' %}#20c997
+                                        {% elif type == 'MD' %}#fd7e14
+                                        {% elif type == 'PPTX' %}#6f42c1
+                                        {% elif type == 'RTF' %}#d63384
+                                        {% else %}#4cc9f0
+                                        {% endif %};">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="pie-container">
+                        <canvas id="classificationPie"></canvas>
+                    </div>
+
+                    <!-- Legend for Pie Chart -->
+                    <div class="pie-legend">
+                        {% for type, percent in classification %}
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: 
+                                {% if type == 'PDF' %}#f72585
+                                {% elif type == 'DOC' or type == 'DOCX' %}#4361ee
+                                {% elif type == 'XLS' or type == 'XLSX' %}#10b981
+                                {% elif type == 'CSV' %}#f8961e
+                                {% elif type == 'TXT' %}#9c27b0
+                                {% elif type == 'LOG' %}#ff9800
+                                {% elif type == 'JPEG' or type == 'JPG' %}#e83e8c
+                                {% elif type == 'PNG' %}#4cc9f0
+                                {% elif type == 'JSON' %}#20c997
+                                {% elif type == 'MD' %}#fd7e14
+                                {% elif type == 'PPTX' %}#6f42c1
+                                {% elif type == 'RTF' %}#d63384
+                                {% else %}#4cc9f0
+                                {% endif %};">
+                            </span>
+                            <span class="legend-label">{{ type }}</span>
+                            <span class="legend-value">{{ percent }}%</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- AI Insights Card -->
+                <div class="card glass-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-brain"></i> AI Insights</h2>
+                        <div class="badge">Real-time</div>
+                    </div>
+                    
+                    <div class="insights-container">
+                        {% for insight in ai_insights %}
+                        <div class="insight-card" style="--card-color: {% if loop.index0 == 0 %}#f72585{% elif loop.index0 == 1 %}#f8961e{% elif loop.index0 == 2 %}#10b981{% else %}#4361ee{% endif %}">
+                            <div class="insight-content">
+                                <span class="insight-highlight">{{ insight.title }}</span>
+                                <span class="insight-text">{{ insight.description }}</span>
+                            </div>
+                            <div class="insight-tag {{ insight.tag|lower }}">{{ insight.tag }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Sentiment Analysis Card -->
+                <div class="card glass-card sentiment-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> Sentiment Analysis</h2>
+                        <div class="legend-group">
+                            <span><span class="legend-color pos"></span> Pos</span>
+                            <span><span class="legend-color neu"></span> Neu</span>
+                            <span><span class="legend-color neg"></span> Neg</span>
+                        </div>
+                    </div>
+                    
+                    <div class="graph-wrapper">
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
+                    
+                    <div class="graph-stats">
+                        <div class="stat-mini">
+                            <span class="stat-label">Score</span>
+                            <span class="stat-value {{ sentiment_class }}">{{ sentiment_score }}</span>
+                        </div>
+                        <div class="stat-mini">
+                            <span class="stat-label">Trend</span>
+                            <span class="stat-value"><i class="fas {{ trend_icon }}"></i> {{ trend }}</span>
+                        </div>
+                        <div class="stat-mini">
+                            <span class="stat-label">Confidence</span>
+                            <span class="stat-value">{{ confidence }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection Summary Card -->
+                <div class="card glass-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-shield-alt"></i> Detection Summary</h2>
+                    </div>
+                    
+                    <div class="detection-summary">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Detected</th>
+                                    <th>Safe</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in detection_summary %}
+                                <tr>
+                                    <td>{{ item.type }}</td>
+                                    <td class="detected">{{ item.detected }}</td>
+                                    <td class="safe">{{ item.safe }}</td>
+                                    <td class="rate">{{ item.rate }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Alerts - Scrollable -->
+                <div class="card glass-card alerts-scrollable">
+                    <div class="card-header">
+                        <h2><i class="fas fa-bell"></i> Recent Alerts</h2>
+                        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    
+                    <div class="alerts-scrollable-list">
+                        {% if alerts %}
+                            {% for alert in alerts %}
+                            <div class="alert-mini-item {{ alert.risk|lower }}">
+                                <div class="alert-mini-icon">
+                                    <i class="fas {% if alert.risk|lower == 'critical' %}fa-exclamation-circle{% elif alert.risk|lower == 'high' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                                </div>
+                                <div class="alert-mini-content">
+                                    <div class="alert-mini-title">{{ alert.issue }}</div>
+                                    <div class="alert-mini-time">{{ alert.time }}</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state-mini">
+                                <i class="fas fa-check-circle"></i>
+                                <p>No Alerts</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Action Buttons - Only at Bottom -->
+                <div class="action-buttons-container">
+                    <a href="{{ url_for('home') }}" class="action-btn primary">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload New Data
+                    </a>
+                   <a href="{{ url_for('export_report') }}" class="action-btn secondary">
+    <i class="fas fa-download"></i> Export Report
+</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-left">
+                <i class="fas fa-shield-alt"></i>
+                <span>System secured with AI Shield v2.5 • Last scan: 2 mins ago</span>
+            </div>
+            <div class="footer-right">
+                <div class="footer-stat">
+                    <i class="fas fa-microchip"></i>
+                    <span>CPU: 23%</span>
+                </div>
+                <div class="footer-stat">
+                    <i class="fas fa-memory"></i>
+                    <span>RAM: 4.2GB</span>
+                </div>
+                <div class="footer-stat">
+                    <span class="online-indicator"></span>
+                    <span>AI Core Online</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Set current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+
+        // Export Report Function
+        function exportReport() {
+            alert('Exporting report...');
+        }
+
+        // Sentiment Chart
+        const rawData = {{ sentiment_list|tojson }};
+        
+        const pointColors = rawData.map(value => {
+            if (value > 0.2) return "#4361ee";
+            if (value < -0.2) return "#f72585";
+            return "#facc15";
+        });
+
+        new Chart(document.getElementById('sentimentChart'), {
+            type: 'line',
+            data: {
+                labels: rawData.map((_, i) => "F" + (i + 1)),
+                datasets: [{
+                    label: 'Sentiment',
+                    data: rawData,
+                    borderColor: "#4cc9f0",
+                    backgroundColor: "rgba(76,201,240,0.1)",
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: pointColors,
+                    pointBorderColor: pointColors,
+                    pointRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: -1,
+                        max: 1,
+                        ticks: { color: "#94a3b8", stepSize: 0.5 },
+                        grid: { color: "rgba(255,255,255,0.05)" }
+                    },
+                    x: {
+                        ticks: { color: "#94a3b8", maxRotation: 0 },
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Classification Pie Chart
+        const classificationLabels = {{ classification|map(attribute=0)|list|tojson }};
+        const classificationData = {{ classification|map(attribute=1)|list|tojson }};
+        
+        const pieColors = classificationLabels.map(type => {
+            if (type.includes('PDF')) return '#f72585';
+            if (type.includes('DOC')) return '#4361ee';
+            if (type.includes('XLS')) return '#10b981';
+            if (type.includes('CSV')) return '#f8961e';
+            if (type.includes('TXT')) return '#9c27b0';
+            if (type.includes('LOG')) return '#ff9800';
+            if (type.includes('JPEG') || type.includes('JPG')) return '#e83e8c';
+            if (type.includes('PNG')) return '#4cc9f0';
+            if (type.includes('JSON')) return '#20c997';
+            if (type.includes('MD')) return '#fd7e14';
+            if (type.includes('PPT')) return '#6f42c1';
+            if (type.includes('RTF')) return '#d63384';
+            return '#4cc9f0';
+        });
+        
+        new Chart(document.getElementById('classificationPie'), {
+            type: 'doughnut',
+            data: {
+                labels: classificationLabels,
+                datasets: [{
+                    data: classificationData,
+                    backgroundColor: pieColors,
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+    </script>
+</body>
+</html>
