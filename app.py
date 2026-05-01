@@ -60,7 +60,7 @@ def get_color_for_type(type_name):
 app.secret_key = "darkdata_secret"
 app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///files.db"
-app.config["UPLOAD_FOLDER"] = "data/raw"
+# app.config["UPLOAD_FOLDER"] = "data/raw"
 
 # Create upload folder if not exists
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
